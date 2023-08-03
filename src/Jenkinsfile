@@ -25,7 +25,8 @@ pipeline {
             steps {
                 sshagent([cred]) {
                     sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
-                        cd ~/store/dist/docker-compose
+                        cd ~/store/dist/docker-compose/
+                        sudo su mahesa
                         docker compose up -d
                         exit
                         EOF
