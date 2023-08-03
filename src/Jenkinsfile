@@ -1,7 +1,7 @@
 def branch = "main"
 def repo = "https://github.com/mahesaj/store.git"
 def cred = "ssh"
-def dir = "~/store"
+def dir = "~/"
 def server = "mahesajihanfadhlurrahman@34.125.161.74"
 
 pipeline {
