@@ -3,12 +3,9 @@ def repo = "https://github.com/mahesaj/store.git"
 def cred = "ssh"
 def dir = "~/store"
 def server = "mahesajihanfadhlurrahman@34.125.161.74"
-def imagename = "store"
-def dockerusername = "mahesaj"
 
 pipeline {
     agent any
-
     stages {
         stage('Pull From Repository') {
             steps {
@@ -24,41 +21,12 @@ pipeline {
             }
         }
 
-        stage('Dockerize') {
+        stage('Docker Compose UP') {
             steps {
                 sshagent([cred]) {
                     sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
-                        cd ${dir}
-                        docker build -t ${imagename}:latest .
-                        exit
-                        EOF
-                    """
-                }
-            }
-        }
-
-        stage('Deploy Docker') {
-            steps {
-                sshagent([cred]) {
-                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
-                        cd ${dir}
-                        docker stop ${imagename} || true
-                        docker rm ${imagename} || true
-                        docker run -d -p 3000:3000 --name=${imagename} ${imagename}:latest
-                        exit
-                        EOF
-                    """
-                }
-            }
-        }
-
-        stage('Push to Docker Hub') {
-            steps {
-                sshagent([cred]) {
-                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
-                        docker tag ${imagename}:latest ${dockerusername}/${imagename}:latest
-                        docker login -u ${dockerusername} -p DOCKER_PASSWORD
-                        docker push ${dockerusername}/${imagename}:latest
+                        cd ~/store/dist/docker-compose
+                        docker compose up -d
                         exit
                         EOF
                     """
